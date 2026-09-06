@@ -15,6 +15,14 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -y -qq bison flex libssl-dev bc gcc-aarch64-linux-gnu python3 xz-utils
 
+      - name: Add 8GB swap (LTO link needs it)
+        run: |
+          sudo fallocate -l 8G /swapfile || sudo dd if=/dev/zero of=/swapfile bs=1M count=8192
+          sudo chmod 600 /swapfile
+          sudo mkswap /swapfile
+          sudo swapon /swapfile
+          free -h
+
       - name: Download kernel tree + clang12 toolchain (release assets)
         env:
           GH_TOKEN: ${{ github.token }}
