@@ -31,6 +31,11 @@ jobs:
           ls $GITHUB_WORKSPACE/bsp/kernel5.4/kernel5.4 | head -5
           /opt/clang/clang-r416183b/bin/clang --version | head -2
 
+      - name: Apply fixup patches
+        run: |
+          cd $GITHUB_WORKSPACE/bsp/kernel5.4/kernel5.4
+          patch -p1 < $GITHUB_WORKSPACE/fixes.patch || true
+
       - name: Build kernel (5.4.302 code, vermagic 254 spoof)
         run: |
           set -o pipefail

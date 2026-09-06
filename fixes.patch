@@ -1,0 +1,16 @@
+diff --git a/include/linux/timer.h b/include/linux/timer.h
+--- a/include/linux/timer.h
++++ b/include/linux/timer.h
+@@ -189,14 +189,6 @@ extern int try_to_del_timer_sync(struct timer_list *timer);
+ extern int del_timer_sync(struct timer_list *timer);
+ extern int timer_delete_sync(struct timer_list *timer);
+ 
+-/* 5.4.29x backports use timer_delete_sync; vendor tree is pre-rename */
+-static inline int timer_delete_sync(struct timer_list *timer)
+-{
+-	return del_timer_sync(timer);
+-}
+-
+ #define del_singleshot_timer_sync(t) del_timer_sync(t)
+ 
+ extern void init_timers(void);
