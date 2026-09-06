@@ -1,0 +1,44 @@
+--- bsp/kernel5.4/kernel5.4/kernel/trace/trace.c	2026-09-06 15:15:41.000000000 +0800
++++ /home/qc233/zte/f50_kernel/u30air_5.4.254/bsp/kernel5.4/kernel5.4/kernel/trace/trace.c	2026-09-06 15:38:29.307268749 +0800
+@@ -4300,20 +4300,6 @@
+ 	if (ret)
+ 		return ret;
+ 
+-	mutex_lock(&event_mutex);
+-
+-	/* Fail if the file is marked for removal */
+-	if (file->flags & EVENT_FILE_FL_FREED) {
+-		trace_array_put(file->tr);
+-		ret = -ENODEV;
+-	} else {
+-		event_file_get(file);
+-	}
+-
+-	mutex_unlock(&event_mutex);
+-	if (ret)
+-		return ret;
+-
+ 	filp->private_data = inode->i_private;
+ 
+ 	return 0;
+@@ -4332,6 +4318,20 @@
+ 	if (ret)
+ 		return ret;
+ 
++	mutex_lock(&event_mutex);
++
++	/* Fail if the file is marked for removal */
++	if (file->flags & EVENT_FILE_FL_FREED) {
++		trace_array_put(file->tr);
++		ret = -ENODEV;
++	} else {
++		event_file_get(file);
++	}
++
++	mutex_unlock(&event_mutex);
++	if (ret)
++		return ret;
++
+ 	filp->private_data = inode->i_private;
+ 
+ 	return 0;
