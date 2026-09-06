@@ -42,7 +42,8 @@ jobs:
           grep module_layout out/Module.symvers || true
           strings out/vmlinux | grep -m1 'Linux version 5' || true
 
-      - name: Upload artifacts
+      - name: Upload artifacts (always)
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: f50-kernel-302
