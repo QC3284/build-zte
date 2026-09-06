@@ -26,9 +26,9 @@ jobs:
         run: |
           mkdir -p /opt/clang
           tar xzf /tmp/dl/clang12_toolchain.tar.gz -C /opt
-          tar xzf /tmp/dl/f50_tree_302.tar.gz -C $GITHUB_WORKSPACE
+          tar xzf /tmp/dl/f50_tree254p302.tar.gz -C $GITHUB_WORKSPACE
           rm -rf /tmp/dl
-          ls $GITHUB_WORKSPACE/w205ds_276 | head -5
+          ls $GITHUB_WORKSPACE/bsp/kernel5.4/kernel5.4 | head -5
           /opt/clang/clang-r416183b/bin/clang --version | head -2
 
       - name: Build kernel (5.4.302 code, vermagic 254 spoof)
