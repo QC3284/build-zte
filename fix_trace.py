@@ -86,3 +86,12 @@ if k > 0:
         s = s[:m] + s[e:]
         open(p, 'w').write(s)
         print('loop.c bdev removed')
+
+# ---- drivers/interconnect/internal.h: add bool enabled to icc_req ----
+p = 'drivers/interconnect/internal.h'
+s = open(p).read()
+old = '\tu32 tag;\n\tu32 avg_bw;\n\tu32 peak_bw;\n};'
+new = '\tu32 tag;\n\tu32 avg_bw;\n\tu32 peak_bw;\n\tbool enabled;\n};'
+if old in s:
+    open(p, 'w').write(s.replace(old, new, 1))
+    print('icc enabled added')
