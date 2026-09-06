@@ -47,3 +47,13 @@ assert anchor in s, 'file_tr anchor not found'
 s = s.replace(anchor, repl, 1)
 open(p, 'w').write(s)
 print('trace.c fixed' if 'EVENT_FILE_FL_FREED' in s else 'FAILED')
+# ---- f2fs/xattr.c: restore sbi declaration in read_inline_xattr ----
+p = 'fs/f2fs/xattr.c'
+s = open(p).read()
+old = 'static int read_inline_xattr(struct inode *inode, struct page *ipage,\n\t\t\t\t\t\tvoid *txattr_addr)\n{\n\tunsigned int inline_size = inline_xattr_size(inode);'
+new = 'static int read_inline_xattr(struct inode *inode, struct page *ipage,\n\t\t\t\t\t\tvoid *txattr_addr)\n{\n\tstruct f2fs_sb_info *sbi = F2FS_SB(inode->i_sb);\n\tunsigned int inline_size = inline_xattr_size(inode);'
+if old in s:
+    open(p, 'w').write(s.replace(old, new, 1))
+    print('xattr.c fixed')
+else:
+    print('xattr.c anchor not found (already fixed?)')
