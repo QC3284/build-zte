@@ -50,10 +50,12 @@ print('trace.c fixed' if 'EVENT_FILE_FL_FREED' in s else 'FAILED')
 # ---- f2fs/xattr.c: restore sbi declaration in read_inline_xattr ----
 p = 'fs/f2fs/xattr.c'
 s = open(p).read()
-old = 'static int read_inline_xattr(struct inode *inode, struct page *ipage,\n\t\t\t\t\t\tvoid *txattr_addr)\n{\n\tunsigned int inline_size = inline_xattr_size(inode);'
-new = 'static int read_inline_xattr(struct inode *inode, struct page *ipage,\n\t\t\t\t\t\tvoid *txattr_addr)\n{\n\tstruct f2fs_sb_info *sbi = F2FS_SB(inode->i_sb);\n\tunsigned int inline_size = inline_xattr_size(inode);'
-if old in s:
-    open(p, 'w').write(s.replace(old, new, 1))
+old = 'static int read_inline_xattr(struct inode *inode, struct page *ipage,'
+k = s.find(old)
+if k > 0 and 'struct f2fs_sb_info *sbi' not in s[k:k+300]:
+    j = s.find('{', k) + 1
+    s = s[:j] + '\n\tstruct f2fs_sb_info *sbi = F2FS_SB(inode->i_sb);' + s[j:]
+    open(p, 'w').write(s)
     print('xattr.c fixed')
 else:
-    print('xattr.c anchor not found (already fixed?)')
+    print('xattr.c already ok')
