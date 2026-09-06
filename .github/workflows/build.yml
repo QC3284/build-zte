@@ -34,7 +34,8 @@ jobs:
       - name: Apply fixup patches
         run: |
           cd $GITHUB_WORKSPACE/bsp/kernel5.4/kernel5.4
-          patch -p1 < $GITHUB_WORKSPACE/fixes.patch || true
+          sed -i '/static inline int timer_delete_sync/,/^}/d' include/linux/timer.h
+          grep -c timer_delete_sync include/linux/timer.h
 
       - name: Build kernel (5.4.302 code, vermagic 254 spoof)
         run: |
