@@ -26,13 +26,15 @@ jobs:
         run: |
           mkdir -p /opt/clang
           tar xzf /tmp/dl/clang12_toolchain.tar.gz -C /opt
-          tar xzf /tmp/dl/f50_tree_302.tar.gz -C /home/runner/work/build-zte
+          tar xzf /tmp/dl/f50_tree_302.tar.gz -C $GITHUB_WORKSPACE
           rm -rf /tmp/dl
-          ls /home/runner/work/build-zte/w205ds_276 | head -5
+          ls $GITHUB_WORKSPACE/w205ds_276 | head -5
           /opt/clang/clang-r416183b/bin/clang --version | head -2
 
       - name: Build kernel (5.4.302 code, vermagic 254 spoof)
-        run: bash f50_build.sh 2>&1 | tee build_log.txt
+        run: |
+          set -o pipefail
+          bash f50_build.sh 2>&1 | tee build_log.txt
 
       - name: Checks
         run: |

@@ -4,8 +4,8 @@
 set -e
 export PATH=/opt/clang/clang-r416183b/bin:$PATH
 export ZTE_BOARD_NAME=anthurium
-SRC=/home/runner/work/build-zte/build-zte/w205ds_276
-OUT=/home/runner/work/build-zte/build-zte/out
+SRC=$GITHUB_WORKSPACE/w205ds_276
+OUT=$GITHUB_WORKSPACE/out
 mkdir -p $OUT
 cp config $OUT/.config
 cd $OUT
