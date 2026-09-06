@@ -59,3 +59,17 @@ if k > 0 and 'struct f2fs_sb_info *sbi' not in s[k:k+300]:
     print('xattr.c fixed')
 else:
     print('xattr.c already ok')
+
+# ---- f2fs/xattr.c: remove unused sbi in __f2fs_setxattr ----
+p = 'fs/f2fs/xattr.c'
+s = open(p).read()
+old = 'static int __f2fs_setxattr(struct inode *inode, int index,'
+k = s.find(old)
+if k > 0:
+    j = s.find('{', k) + 1
+    m = s.find('struct f2fs_sb_info *sbi = F2FS_I_SB(inode);', j)
+    if 0 < m < j + 200:
+        e = s.find('\n', m) + 1
+        s = s[:m] + s[e:]
+        open(p, 'w').write(s)
+        print('xattr unused sbi removed')
