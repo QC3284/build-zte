@@ -2,7 +2,7 @@
 # F50 (MU300) 5.4.302 内核构建(在 GitHub Actions runner 上执行)
 # 代码 = 5.4.302 + 26 个 stable 补丁 + feimao 板;vermagic 伪装 5.4.254(保 vendor 模块 ABI)
 set -e
-export PATH=/opt/clang/clang-r416183b/bin:$PATH
+export PATH=/opt/clang-r416183b/bin:$PATH
 export ZTE_BOARD_NAME=anthurium
 SRC=$GITHUB_WORKSPACE/w205ds_276
 OUT=$GITHUB_WORKSPACE/out
