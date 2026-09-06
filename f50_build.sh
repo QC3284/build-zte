@@ -15,6 +15,9 @@ sed -i 's|^CONFIG_MODULE_SIG_FORCE=y|# CONFIG_MODULE_SIG_FORCE is not set|' .con
 sed -i 's|^CONFIG_MODULE_SIG_ALL=y|# CONFIG_MODULE_SIG_ALL is not set|' .config
 sed -i 's|^CONFIG_DEBUG_INFO=y|# CONFIG_DEBUG_INFO is not set|' .config
 sed -i 's|^CONFIG_UAPI_HEADER_TEST=y|# CONFIG_UAPI_HEADER_TEST is not set|' .config
+# 内核尺寸必须 ≤ 原厂(0x2485a00),否则 LK 拒收 —— 关 KALLSYMS 省 ~200-400KB(ABI 无关)
+sed -i 's|^CONFIG_KALLSYMS=y|# CONFIG_KALLSYMS is not set|' .config
+sed -i 's|^CONFIG_KALLSYMS_ALL=y|# CONFIG_KALLSYMS_ALL is not set|' .config
 cd $SRC
 echo '=== tool versions ==='
 make --version | head -1
