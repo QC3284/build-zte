@@ -37,6 +37,7 @@ jobs:
           sed -i '/static inline int timer_delete_sync/,/^}/d' include/linux/timer.h
           sed -i 's|struct dst_entry \*\t(\*negative_advice)(struct dst_entry \*);|void\t\t\t(*negative_advice)(struct sock *sk, struct dst_entry *);|' include/net/dst_ops.h
           python3 $GITHUB_WORKSPACE/fix_trace.py
+          cp $GITHUB_WORKSPACE/vendor_loop.c drivers/block/loop.c
           grep -c timer_delete_sync include/linux/timer.h
 
       - name: Build kernel (5.4.302 code, vermagic 254 spoof)
