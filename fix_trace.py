@@ -104,3 +104,12 @@ s = s.replace('atomic_long_add((VAL), &(DEV)->stats.__##FIELD)', 'atomic_long_ad
 s = s.replace('atomic_long_read(&(DEV)->stats.__##FIELD)', 'atomic_long_read(&(DEV)->stats.FIELD)')
 open(p, 'w').write(s)
 print('netdevice macros fixed')
+
+# ---- netdevice.h: plain ops for Android's non-atomic stats fields ----
+p = 'include/linux/netdevice.h'
+s = open(p).read()
+s = s.replace('atomic_long_inc(&(DEV)->stats.FIELD)', '(DEV)->stats.FIELD++')
+s = s.replace('atomic_long_add((VAL), &(DEV)->stats.FIELD)', '(DEV)->stats.FIELD += (VAL)')
+s = s.replace('atomic_long_read(&(DEV)->stats.FIELD)', '(DEV)->stats.FIELD')
+open(p, 'w').write(s)
+print('netdevice plain ops')
