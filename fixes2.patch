@@ -1,5 +1,5 @@
---- bsp/kernel5.4/kernel5.4/kernel/trace/trace.c	2026-09-06 15:15:41.000000000 +0800
-+++ /home/qc233/zte/f50_kernel/u30air_5.4.254/bsp/kernel5.4/kernel5.4/kernel/trace/trace.c	2026-09-06 15:38:29.307268749 +0800
+--- kernel/trace/trace.c	2026-09-06 15:15:41.000000000 +0800
++++ /home/qc233/zte/f50_kernel/u30air_5.4.254/kernel/trace/trace.c	2026-09-06 15:38:29.307268749 +0800
 @@ -4300,20 +4300,6 @@
  	if (ret)
  		return ret;
