@@ -95,3 +95,12 @@ new = '\tu32 tag;\n\tu32 avg_bw;\n\tu32 peak_bw;\n\tbool enabled;\n};'
 if old in s:
     open(p, 'w').write(s.replace(old, new, 1))
     print('icc enabled added')
+
+# ---- netdevice.h: DEV_STATS macros must use non-prefixed fields (Android struct) ----
+p = 'include/linux/netdevice.h'
+s = open(p).read()
+s = s.replace('atomic_long_inc(&(DEV)->stats.__##FIELD)', 'atomic_long_inc(&(DEV)->stats.FIELD)')
+s = s.replace('atomic_long_add((VAL), &(DEV)->stats.__##FIELD)', 'atomic_long_add((VAL), &(DEV)->stats.FIELD)')
+s = s.replace('atomic_long_read(&(DEV)->stats.__##FIELD)', 'atomic_long_read(&(DEV)->stats.FIELD)')
+open(p, 'w').write(s)
+print('netdevice macros fixed')
