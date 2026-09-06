@@ -73,3 +73,16 @@ if k > 0:
         s = s[:m] + s[e:]
         open(p, 'w').write(s)
         print('xattr unused sbi removed')
+
+# ---- drivers/block/loop.c: remove unused bdev in loop_set_status ----
+p = 'drivers/block/loop.c'
+s = open(p).read()
+k = s.find('static int\nloop_set_status(struct loop_device *lo, const struct loop_info64 *info)')
+if k > 0:
+    j = s.find('{', k) + 1
+    m = s.find('\tstruct block_device *bdev;', j)
+    if 0 < m < j + 300:
+        e = s.find('\n', m) + 1
+        s = s[:m] + s[e:]
+        open(p, 'w').write(s)
+        print('loop.c bdev removed')
