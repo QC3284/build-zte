@@ -25,7 +25,7 @@ clang --version | head -1
 echo '=== olddefconfig (full log) ==='
 make O=$OUT ARCH=arm64 LLVM=1 LLVM_IAS=1 CROSS_COMPILE=aarch64-linux-gnu- olddefconfig
 echo '=== Image ==='
-make O=$OUT ARCH=arm64 LLVM=1 LLVM_IAS=1 CROSS_COMPILE=aarch64-linux-gnu- -j2 Image
+make O=$OUT ARCH=arm64 LLVM=1 LLVM_IAS=1 CROSS_COMPILE=aarch64-linux-gnu- -j4 Image
 echo '=== modules_prepare ==='
 make O=$OUT ARCH=arm64 LLVM=1 LLVM_IAS=1 CROSS_COMPILE=aarch64-linux-gnu- modules_prepare
 echo '=== zsmalloc.ko (zram 依赖 zs_* 导出符号,先建) ==='

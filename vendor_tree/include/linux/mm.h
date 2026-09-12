@@ -42,6 +42,7 @@ struct bdi_writeback;
 void init_mm_internals(void);
 
 #ifndef CONFIG_NEED_MULTIPLE_NODES	/* Don't use mapnrs, do it properly */
+extern int sysctl_page_lock_unfairness;
 extern unsigned long max_mapnr;
 
 static inline void set_max_mapnr(unsigned long limit)

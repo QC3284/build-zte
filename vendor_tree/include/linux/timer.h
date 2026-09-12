@@ -196,10 +196,7 @@ extern int timer_delete_sync(struct timer_list *timer);
  *
  * Do not use in new code. Use timer_delete_sync() instead.
  */
-static inline int del_timer_sync(struct timer_list *timer)
-{
-	return timer_delete_sync(timer);
-}
+extern int del_timer_sync(struct timer_list *timer);
 
 /* 5.4.29x backports use timer_delete_sync; vendor tree is pre-rename */
 
