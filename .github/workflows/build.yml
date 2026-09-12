@@ -35,7 +35,9 @@ jobs:
         run: |
           cd $GITHUB_WORKSPACE/bsp/kernel5.4/kernel5.4
           cp -r $GITHUB_WORKSPACE/vendor_tree/. .
-          rm -f net/core/sock_destructor.h
+          # 按清单删除(仅 tarold 存在的文件)
+          while read -r f; do [ -n "$f" ] && rm -f "$f"; done < $GITHUB_WORKSPACE/vendor_delete.txt
+          echo "deleted $(wc -l < $GITHUB_WORKSPACE/vendor_delete.txt) files"
           grep -c timer_delete_sync include/linux/timer.h || true
 
       - name: Build kernel (5.4.302 code, vermagic 254 spoof)
