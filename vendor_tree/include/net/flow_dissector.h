@@ -161,10 +161,6 @@ struct flow_dissector_key_ports {
 };
 
 /**
-	};
-};
-
-/**
  * flow_dissector_key_icmp:
  *	@ports: type and code of ICMP header
  *		icmp: ICMP type (high) and code (low)
