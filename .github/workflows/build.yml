@@ -40,6 +40,14 @@ jobs:
           cp $GITHUB_WORKSPACE/vendor_loop.c drivers/block/loop.c
           cp $GITHUB_WORKSPACE/vendor_sprd_serial.c drivers/tty/serial/sprd_serial.c
           cp $GITHUB_WORKSPACE/regdb_sforshee_2024.hex net/wireless/certs/sforshee.hex
+          # module_layout ABI: revert struct-changing 5.4.y hunks (perf_event group_generation/lost_samples, hrtimer online bit, cred atomic_long)
+          cp $GITHUB_WORKSPACE/vendor_perf_event.h include/linux/perf_event.h
+          cp $GITHUB_WORKSPACE/vendor_hrtimer.h include/linux/hrtimer.h
+          cp $GITHUB_WORKSPACE/vendor_cred.h include/linux/cred.h
+          cp $GITHUB_WORKSPACE/vendor_core.c kernel/events/core.c
+          cp $GITHUB_WORKSPACE/vendor_ring_buffer.c kernel/events/ring_buffer.c
+          cp $GITHUB_WORKSPACE/vendor_hrtimer_c.c kernel/time/hrtimer.c
+          cp $GITHUB_WORKSPACE/vendor_cred_c.c kernel/cred.c
           grep -c timer_delete_sync include/linux/timer.h
 
       - name: Build kernel (5.4.302 code, vermagic 254 spoof)
