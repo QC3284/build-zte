@@ -38,6 +38,8 @@ jobs:
           sed -i 's|struct dst_entry \*\t(\*negative_advice)(struct dst_entry \*);|void\t\t\t(*negative_advice)(struct sock *sk, struct dst_entry *);|' include/net/dst_ops.h
           python3 $GITHUB_WORKSPACE/fix_trace.py
           cp $GITHUB_WORKSPACE/vendor_loop.c drivers/block/loop.c
+          cp $GITHUB_WORKSPACE/vendor_sprd_serial.c drivers/tty/serial/sprd_serial.c
+          cp $GITHUB_WORKSPACE/regdb_sforshee_2024.hex net/wireless/certs/sforshee.hex
           grep -c timer_delete_sync include/linux/timer.h
 
       - name: Build kernel (5.4.302 code, vermagic 254 spoof)
