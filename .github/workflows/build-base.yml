@@ -1,0 +1,72 @@
+name: build-f50-baseline-254
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install build deps
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq bison flex libssl-dev bc gcc-aarch64-linux-gnu python3 xz-utils
+
+      - name: Download assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release download assets --pattern 'clang12_toolchain.tar.gz' --repo ${{ github.repository }} -D /tmp/dl
+          gh release download assets --pattern 'f50_tree254p302.tar.gz' --repo ${{ github.repository }} -D /tmp/dl
+          gh release download assets --pattern 'restore_254.tar.gz' --repo ${{ github.repository }} -D /tmp/dl
+          ls -la /tmp/dl
+
+      - name: Extract toolchain + tree
+        run: |
+          tar xzf /tmp/dl/clang12_toolchain.tar.gz -C /opt
+          ls -d /opt/clang* || true
+          /opt/clang-r416183b/bin/clang --version | head -2
+          tar xzf /tmp/dl/f50_tree254p302.tar.gz -C $GITHUB_WORKSPACE
+          ls $GITHUB_WORKSPACE/bsp/kernel5.4/kernel5.4 | head -5
+
+      - name: Restore pristine 254 baseline (only regdb cert fix kept)
+        run: |
+          SRC=$GITHUB_WORKSPACE/bsp/kernel5.4/kernel5.4
+          mkdir -p /tmp/restore
+          tar xzf /tmp/dl/restore_254.tar.gz -C /tmp/restore
+          cp -r /tmp/restore/files/. $SRC/
+          cd $SRC
+          while read -r f; do [ -n "$f" ] && rm -rf "$f"; done < /tmp/restore/delete.txt
+          echo "=== baseline sanity ==="
+          echo -n "SUBLEVEL: "; grep -E '^SUBLEVEL' Makefile
+          echo -n "timer_delete_sync in timer.h: "; grep -c timer_delete_sync include/linux/timer.h || true
+          echo -n "leftover .orig/.rej: "; find . -name '*.orig' -o -name '*.rej' | wc -l
+          echo -n "sforshee.hex bytes: "; wc -c < net/wireless/certs/sforshee.hex
+          echo -n "sforshee.hex md5: "; md5sum net/wireless/certs/sforshee.hex
+          echo -n "302 marker group_generation: "; grep -rc group_generation include/linux/perf_event.h || true
+
+      - name: Build kernel (pristine 254 baseline)
+        run: |
+          set -o pipefail
+          bash f50_build.sh 2>&1 | tee build_log.txt
+
+      - name: Checks
+        run: |
+          grep -a module_layout out/kernel/module.o.symversions || true
+          grep module_layout out/Module.symvers || true
+          strings out/vmlinux | grep -m1 'Linux version 5' || true
+          ls -la out/arch/arm64/boot/Image
+
+      - name: Upload artifacts (always)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: f50-kernel-baseline-254
+          path: |
+            out/arch/arm64/boot/Image
+            out/Module.symvers
+            build_log.txt
+          retention-days: 14
