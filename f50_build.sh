@@ -14,8 +14,8 @@ sed -i 's|^CONFIG_MODULE_SIG_FORCE=y|# CONFIG_MODULE_SIG_FORCE is not set|' .con
 sed -i 's|^CONFIG_MODULE_SIG_ALL=y|# CONFIG_MODULE_SIG_ALL is not set|' .config
 sed -i 's|^CONFIG_DEBUG_INFO=y|# CONFIG_DEBUG_INFO is not set|' .config
 sed -i 's|^CONFIG_UAPI_HEADER_TEST=y|# CONFIG_UAPI_HEADER_TEST is not set|' .config
-# 内核尺寸必须 ≤ 原厂(0x2485a00),否则 LK 拒收 —— 关 KALLSYMS 省 ~200-400KB(ABI 无关)
-sed -i 's|^CONFIG_KALLSYMS=y|# CONFIG_KALLSYMS is not set|' .config
+# KALLSYMS=y 必须保留:struct module 的 kallsyms 字段受 CONFIG_KALLSYMS 控制,关掉会改 module_layout CRC 破坏 ABI(实测 0x2f279e7b -> 0x926deb82)
+# 只关 KALLSYMS_ALL 省体积(ALL 只影响 /proc/kallsyms 符号完整性,不影响 struct/ABI)
 sed -i 's|^CONFIG_KALLSYMS_ALL=y|# CONFIG_KALLSYMS_ALL is not set|' .config
 cd $SRC
 echo '=== tool versions ==='
@@ -28,6 +28,8 @@ echo '=== Image ==='
 make O=$OUT ARCH=arm64 LLVM=1 LLVM_IAS=1 CROSS_COMPILE=aarch64-linux-gnu- -j2 Image
 echo '=== modules_prepare ==='
 make O=$OUT ARCH=arm64 LLVM=1 LLVM_IAS=1 CROSS_COMPILE=aarch64-linux-gnu- modules_prepare
+echo '=== zsmalloc.ko (zram 依赖 zs_* 导出符号,先建) ==='
+make O=$OUT ARCH=arm64 LLVM=1 LLVM_IAS=1 CROSS_COMPILE=aarch64-linux-gnu- mm/zsmalloc.ko
 echo '=== zram.ko ==='
 make O=$OUT ARCH=arm64 LLVM=1 LLVM_IAS=1 CROSS_COMPILE=aarch64-linux-gnu- M=drivers/block/zram modules
 echo BUILD_DONE
