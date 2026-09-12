@@ -113,3 +113,12 @@ s = s.replace('atomic_long_add((VAL), &(DEV)->stats.FIELD)', '(DEV)->stats.FIELD
 s = s.replace('atomic_long_read(&(DEV)->stats.FIELD)', '(DEV)->stats.FIELD')
 open(p, 'w').write(s)
 print('netdevice plain ops')
+
+# ---- 8250_pci.c: rename local ASIX vendor define ----
+p = 'drivers/tty/serial/8250/8250_pci.c'
+s = open(p).read()
+s = s.replace('#define PCI_VENDOR_ID_ASIX\t\t0x9710', '#define PCI_VENDOR_ID_ASIX_LEGACY\t0x9710', 1)
+s = s.replace('\t\t.vendor\t\t= PCI_VENDOR_ID_ASIX,', '\t\t.vendor\t\t= PCI_VENDOR_ID_ASIX_LEGACY,', 1)
+s = s.replace('{ \tPCI_VENDOR_ID_ASIX, PCI_DEVICE_ID_ASIX_AX99100,', '{ \tPCI_VENDOR_ID_ASIX_LEGACY, PCI_DEVICE_ID_ASIX_AX99100,', 1)
+open(p, 'w').write(s)
+print('8250 asix renamed')
